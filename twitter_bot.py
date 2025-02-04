@@ -42,7 +42,7 @@ def generate_tweet():
     return tweet
 
 
-# Post tweet to Twitter
+# Post tweet to Twitter (limited to 2-3 times per week)
 def post_tweet():
     tweet = generate_tweet()
     try:
@@ -52,10 +52,10 @@ def post_tweet():
         print(f"Error posting tweet: {e}")
 
 
-# Automated engagement: Reply to AI-related tweets
+# Automated engagement: Limited Replies to Stay Within API Limit
 def auto_reply():
     search_query = "AI automation OR business automation OR real estate AI"
-    tweets = api.search_tweets(q=search_query, count=5, lang='en', result_type='recent')
+    tweets = api.search_tweets(q=search_query, count=1, lang='en', result_type='recent')  # Limit replies to 1 per day
 
     for tweet in tweets:
         try:
@@ -77,11 +77,15 @@ def track_growth():
     return followers_count
 
 
-# Main loop: Run automation every few hours
+# Main loop: Adjusted to post only 2-3 times per week
 def main():
+    post_days = [1, 4]  # Tweet on Mondays & Thursdays
     while True:
-        print("Posting a tweet...")
-        post_tweet()
+        current_day = datetime.now().weekday()
+
+        if current_day in post_days:
+            print("Posting a tweet...")
+            post_tweet()
 
         print("Engaging with Twitter audience...")
         auto_reply()
@@ -89,8 +93,8 @@ def main():
         print("Tracking follower growth...")
         track_growth()
 
-        print("Sleeping for 3 hours...")
-        time.sleep(10800)  # Sleep for 3 hours before next cycle
+        print("Sleeping for 24 hours...")
+        time.sleep(86400)  # Sleep for 24 hours before checking again
 
 
 if __name__ == "__main__":
